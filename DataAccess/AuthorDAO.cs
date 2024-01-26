@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Models;
+﻿using BusinessObjects.DTO;
+using BusinessObjects.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +39,20 @@ namespace DataAccess
             return author;
         }
         // addAuthor
-        public static void addAuthor(Author author)
+        public static void addAuthor(AuthorRequest authorRequest)
         {
+            
+            var author = new Author()
+            {
+                LastName = authorRequest.LastName,
+                FirstName = authorRequest.FirstName,
+                Phone = authorRequest.Phone,
+                Address = authorRequest.Address,
+                City = authorRequest.City,
+                State = authorRequest.State,
+                Zip = authorRequest.Zip,
+                Email = authorRequest.Email
+            };
             try
             {
                 _context.Authors.Add(author);
@@ -51,11 +64,11 @@ namespace DataAccess
             }
         }
         // updateAuthor
-        public static void updateAuthor(Author author)
+        public static Author updateAuthor(int id , AuthorRequest author)
         {
             try
             {
-                Author authorUpdate = _context.Authors.SingleOrDefault(x => x.AuthorId == author.AuthorId);
+                Author authorUpdate = _context.Authors.SingleOrDefault(x => x.AuthorId == id);
                 authorUpdate.LastName = author.LastName;
                 authorUpdate.FirstName = author.FirstName;
                 authorUpdate.Phone = author.Phone;
@@ -65,6 +78,7 @@ namespace DataAccess
                 authorUpdate.Zip = author.Zip;
                 authorUpdate.Email = author.Email;
                 _context.SaveChanges();
+                return authorUpdate;
             }
             catch (Exception ex)
             {

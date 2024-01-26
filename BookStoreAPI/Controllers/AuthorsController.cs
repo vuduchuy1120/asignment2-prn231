@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using Repository.Services;
 using Repository;
+using BusinessObjects.DTO;
 
 namespace BookStoreAPI.Controllers
 {
@@ -19,33 +20,128 @@ namespace BookStoreAPI.Controllers
 
         // GET: api/Authors
         [HttpGet]
-        public ActionResult<IEnumerable<Author>> GetAuthors()
+        public IActionResult GetAuthors()
         {
-            return repository.GetAllAuthors();
+            try
+            {
+                var list = repository.GetAllAuthors();
+                // convert Author to AuthorResponse
+                var response = list.Select(author => new AuthorResponse
+                {
+                    AuthorId = author.AuthorId,
+                    LastName = author.LastName,
+                    FirstName = author.FirstName,
+                    Email = author.Email,
+                    Phone = author.Phone,
+                    Address = author.Address,
+                    City = author.City,
+                    State = author.State,
+                    Zip = author.Zip,
+                    BookAuthors = author.BookAuthors.Select(book => new BookAuthorResponse
+                    {
+                        BookId = book.BookId,
+                        AuthorOrder = book.AuthorOrder,
+                        RoyalityPercentage = book.RoyalityPercentage
+                    }).ToList()
+                }).ToList();
+
+                return Ok(new ApiResponse<object>("Get list successfull!", response));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
+
         }
         [HttpPost]
-        public ActionResult<Author> AddAuthor(Author author)
+        public IActionResult AddAuthor(AuthorRequest author)
         {
-            repository.AddAuthor(author);
-            return author;
+            try
+            {
+                repository.AddAuthor(author);
+                return Ok(new ApiResponse<object>(author));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
         }
         [HttpPut]
-        public ActionResult<Author> UpdateAuthor(Author author)
+        [Route("{id}")]
+        public IActionResult UpdateAuthor([FromRoute] int id, AuthorRequest author)
         {
-            repository.UpdateAuthor(author);
-            return author;
+
+            var authorUpdate = repository.GetAuthorById(id);
+            if (authorUpdate == null)
+            {
+                return BadRequest(new ApiResponse<object>("Author not found"));
+            }
+            try
+            {
+
+                repository.UpdateAuthor(id, author);
+
+                return Ok(new ApiResponse<object>(author));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
+
+
+
+
+
         }
         [HttpDelete("{id}")]
-        public ActionResult<Author> DeleteAuthor(int id)
+        public IActionResult DeleteAuthor(int id)
         {
-            Author author = repository.GetAuthorById(id);
-            repository.DeleteAuthor(author);
-            return author;
+            try
+            {
+                Author author = repository.GetAuthorById(id);
+                repository.DeleteAuthor(author);
+                return Ok(new ApiResponse<object>(true, "Delete successfull!"));
+            }
+            catch
+            {
+                return BadRequest(new ApiResponse<object>("Author not found"));
+            }
         }
         [HttpGet("{id}")]
-        public ActionResult<Author> GetAuthorById(int id)
+        public IActionResult GetAuthorById(int id)
         {
-            return repository.GetAuthorById(id);
+
+           var author = repository.GetAuthorById(id);
+            if (author == null)
+            {
+                return BadRequest(new ApiResponse<object>("Author not found"));
+            }
+            try
+            {
+                var response = new AuthorResponse
+                {
+                    AuthorId = author.AuthorId,
+                    LastName = author.LastName,
+                    FirstName = author.FirstName,
+                    Email = author.Email,
+                    Phone = author.Phone,
+                    Address = author.Address,
+                    City = author.City,
+                    State = author.State,
+                    Zip = author.Zip,
+                    BookAuthors = author.BookAuthors.Select(book => new BookAuthorResponse
+                    {
+                        BookId = book.BookId,
+                        AuthorOrder = book.AuthorOrder,
+                        RoyalityPercentage = book.RoyalityPercentage
+                    }).ToList()
+                };
+                return Ok(new ApiResponse<object>("Get successfull!", response));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
         }
 
     }

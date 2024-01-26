@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Models;
+﻿using BusinessObjects.DTO;
+using BusinessObjects.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Repository.Services
 {
     public interface IAuthorRepository
     {
-        public void AddAuthor(Author author);
-        public void UpdateAuthor(Author author);
+        public void AddAuthor(AuthorRequest author);
+        public Author UpdateAuthor(int id, AuthorRequest author);
         public void DeleteAuthor(Author author);
         public Author GetAuthorById(int id);
         public List<Author> GetAllAuthors();

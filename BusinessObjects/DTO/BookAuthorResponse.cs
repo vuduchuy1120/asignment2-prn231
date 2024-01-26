@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.DTO
 {
-    internal class BookAuthorResponse
+    public class BookAuthorResponse
     {
         public int AuthorId { get; set; }
         public int BookId { get; set; }
