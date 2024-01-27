@@ -12,7 +12,6 @@ namespace DataAccess
     public class PublisherDAO
     {
         // CRUD
-        static BookStoreContext context = new BookStoreContext();
         public static List<Publisher> GetPublishers()
         {
             try
@@ -58,7 +57,7 @@ namespace DataAccess
                     context.Publishers.Add(publisher);
                     context.SaveChanges();
                 };
-             
+
             }
             catch (Exception ex)
             {
@@ -68,43 +67,46 @@ namespace DataAccess
 
         public static Publisher UpdatePublisher(int id, PublisherRequest publisherRequest)
         {
-            var publisher = context.Publishers.SingleOrDefault(x => x.PubId == id);
-            if (publisher != null)
+            using (var context = new BookStoreContext())
             {
-                publisher.PublisherName = publisherRequest.PublisherName;
-                publisher.City = publisherRequest.City;
-                try
+                var publisher = context.Publishers.SingleOrDefault(x => x.PubId == id);
+
+                if (publisher != null)
                 {
-                    using (var context = new BookStoreContext())
+                    publisher.PublisherName = publisherRequest.PublisherName;
+                    publisher.City = publisherRequest.City;
+                    try
                     {
+
+
                         context.SaveChanges();
-                    };
-                    return publisher;
+
+                        return publisher;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                return null;
             }
-            return null;
         }
         public static void DeletePublisher(int id)
         {
-            var publisher = context.Publishers.SingleOrDefault(x => x.PubId == id);
-            if (publisher != null)
+            using (var context = new BookStoreContext())
             {
-                try
+                var publisher = context.Publishers.SingleOrDefault(x => x.PubId == id);
+                if (publisher != null)
                 {
-                    using (var context = new BookStoreContext())
+                    try
                     {
                         context.Publishers.Remove(publisher);
                         context.SaveChanges();
-                    };
-                  
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
             }
         }

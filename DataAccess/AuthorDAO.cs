@@ -1,4 +1,4 @@
-﻿using BusinessObjects.DTO;
+﻿using BusinessObjects.DTO.Author;
 using BusinessObjects.Models;
 using System;
 using System.Collections.Generic;

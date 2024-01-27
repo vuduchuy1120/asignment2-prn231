@@ -1,4 +1,4 @@
-﻿using BusinessObjects.DTO;
+﻿using BusinessObjects.DTO.User;
 using BusinessObjects.Models;
 using System;
 using System.Collections.Generic;
@@ -12,8 +12,14 @@ namespace Repository.Services
     {
         public List<User> GetUsers();
         public User GetUserByID(int userId);
-        public void AddUser(UserRequest userRequest);
-        public User UpdateUser(int userId, UpdateUserRequest userRequest);
+        public void RegisterUser(User user);
+        public void UpdateUser(User user);
         public void DeleteUser(int userId);
+        public void ChangeUserRole(int userId, int roleId);
+        public bool IsUserExist(int userId);
+        public bool IsEmailWasUsed(string email);
+        public void ChangeUserPassword(int userId, string password);
+
+        public User GetUserByEmailAndPassword(string email, string password);
     }
 }

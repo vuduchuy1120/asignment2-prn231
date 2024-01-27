@@ -1,0 +1,237 @@
+﻿@using BusinessObjects.DTO.Author;
+
+@model List<AuthorResponse>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Index";
+
+}
+<style>
+    th, td {
+        text-align: center;
+    }
+</style>
+
+<div>
+    @if (ViewData.ModelState.Any(m => m.Value.Errors.Any()))
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var key in ViewData.ModelState.Keys)
+                {
+                    foreach (var error in ViewData.ModelState[key].Errors)
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+    <h1 class="text-center ">Author information</h1>
+    <hr />
+    <form action="Author/Search" method="post">
+        <label for="name" style="width:150px">Name</label>
+        <input type="text" name="name" id="name" />
+        <br />
+        <br />
+        <label for="address" style="width:150px">City</label>
+        <input type="text" name="address" id="address" />
+        <br />
+        <br />
+        <label style="width:150px"></label>
+        <input style="width:85px" type="submit" value="Search" />
+        <input style="width:85px; margin-left:10px" type="reset" value="Clear" />
+    </form>
+    <br />
+    <br />
+    <div class="d-flex justify-content-start mb-2">
+        <button class="btn btn-info" type="button" data-toggle="modal" data-target="#exampleModal" onclick="displayAuthor(0)">Add Author</button>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>LastName</th>
+                <th>FirstName</th>
+                <th>City</th>
+
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AuthorId</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.City</td>
+
+                    <td class="text-center">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" onclick="displayAuthor(@item.AuthorId)">Edit</button>
+                        <a class="btn btn-secondary" href="../Author/Delete?id=@item.AuthorId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="modal-body" id="authorForm" method="post">
+                <input type="text" class="form-control" name="authorId" id="authorId" hidden>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="firstName" class="form-label">First name</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="firstname" id="firstName" placeholder="First name">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="lastName" class="form-label">Last name</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="lastname" id="lastName" placeholder="Last name">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="phone" id="phone" placeholder="Phone">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="address" class="form-label">Address</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="address" id="address" placeholder="Address">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="city" class="form-label">City</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="city" id="city" placeholder="City">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="state" class="form-label">State</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" name="state" id="state" placeholder="State">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="zip" class="form-label">Zip</label>
+                            <input style="border: 1px solid #dee2e6;" type="text" class="form-control" id="zip" name="zip" placeholder="zip">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-1">
+                            <label for="email" class="form-label">Email</label>
+                            <input style="border: 1px solid #dee2e6;" type="email" class="form-control" id="email" name="email" placeholder="Email">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    const displayUser = (id) => {
+        if (id == 0) {
+            document.getElementById('exampleModalLabel').innerHTML = 'Add new user'
+
+            document.getElementById('passwordForm').hidden = false
+        } else {
+            document.getElementById('exampleModalLabel').innerHTML = 'Update Author has id ' + id
+
+            document.getElementById('passwordForm').hidden = true
+
+        }
+
+        document.getElementById('authorId').innerHTML = `<span>Author has id: ${id}</span>`
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    const getProductApi = (id) => {
+        console.log(id);
+
+        $.ajax({
+
+            url: 'https://localhost:7029/api/Authors/' + id,
+            method: 'GET',
+            success: (result) => {
+                const data = result.data
+                $('#firstName').val(data.firstName);
+                $('#lastName').val(data.lastName);
+                $('#phone').val(data.phone);
+                $('#address').val(data.address);
+                $('#city').val(data.city);
+                $('#state').val(data.state);
+                $('#zip').val(data.zip);
+                $('#email').val(data.emailAddress);
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    }
+
+    const displayAuthor = (id) => {
+        if (id == 0) {
+            document.getElementById('exampleModalLabel').innerHTML = 'Add new author'
+            $('#firstName').val('');
+            $('#lastName').val('');
+            $('#phone').val('');
+            $('#address').val('');
+            $('#city').val('');
+            $('#state').val('');
+            $('#zip').val('');
+            $('#email').val('');
+            document.getElementById('authorForm').action = "/Author/Add"
+        } else {
+            document.getElementById('exampleModalLabel').innerHTML = 'Update author'
+            document.getElementById('authorForm').action = "/Author/Update"
+            document.getElementById('authorId').value = id
+            getProductApi(id)
+        }
+    }
+
+    const submitForm = () => {
+        document.getElementById('authorForm').submit()
+    }
+
+</script>

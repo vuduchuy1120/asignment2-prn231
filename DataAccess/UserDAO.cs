@@ -1,5 +1,6 @@
-﻿using BusinessObjects.DTO;
+﻿using BusinessObjects.DTO.User;
 using BusinessObjects.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace DataAccess
         // get user by email
         public static User GetUserByEmail(string email)
         {
-           using(var context = new BookStoreContext())
+            using (var context = new BookStoreContext())
             {
                 return context.Users.Where(u => u.Email == email).FirstOrDefault();
             }
@@ -24,7 +25,7 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                return context.Users.ToList();
+                return context.Users.Include(r=>r.Role).ToList();
             }
         }
         // get user by id
@@ -32,54 +33,83 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                return context.Users.Where(u => u.UserId == id).FirstOrDefault();
+                return context.Users.Include(r => r.Role).Where(u => u.UserId == id).FirstOrDefault();
             }
         }
         // add user
-        public static void AddUser(UserRequest user)
+
+        public static void RegisterUser(User user)
         {
             using (var context = new BookStoreContext())
             {
-                User user1 = new User()
-                {
-                    Email = user.Email,
-                    Password = user.Password,
-                    RoleId = 1,
-                    PubId = 1
-                };
-                context.Users.Add(user1);
+                context.Users.Add(user);
                 context.SaveChanges();
-            }
-        }
-        // update user
-        public static User UpdateUser(int id, UpdateUserRequest user)
-        {
-            using (var context = new BookStoreContext())
-            {
-                User user1 = context.Users.Where(u => u.UserId == id).FirstOrDefault();
-                user1.PubId = user.PubId;
-                user1.FirstName = user.FirstName;
-                user1.LastName = user.LastName;
-                user1.MiddleName = user.MiddleName;
-                user1.Source = user.Source;
-                user1.HireDate = user.HireDate;
-                context.Users.Update(user1);
-                context.SaveChanges();
-                return user1;
             }
         }
 
-        // delete user
+        public static void UpdateUser(User user)
+        {
+            using (var context = new BookStoreContext())
+            {
+                context.Users.Update(user);
+                context.SaveChanges();
+            }
+        }
+
         public static void DeleteUser(int id)
         {
             using (var context = new BookStoreContext())
             {
-                User user = context.Users.Where(u => u.UserId == id).FirstOrDefault();
+                User user = context.Users.Include(r => r.Role).Where(u => u.UserId == id).FirstOrDefault();
                 context.Users.Remove(user);
                 context.SaveChanges();
             }
         }
 
+        public static User GetUserByEmailAndPassword(string email, string password)
+        {
+
+            using (var context = new BookStoreContext())
+            {
+                return context.Users.Include(r => r.Role).Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+            }
+        }
+        public static bool IsEmailWasUsed(string email)
+        {
+            using (var _context = new BookStoreContext())
+            {
+                return _context.Users.Any(u => u.Email == email);
+            }
+        }
+
+        public static bool IsUserExist(int userId)
+        {
+            using (var _context = new BookStoreContext())
+            {
+                return _context.Users.Any(x => x.UserId == userId);
+            }
+        }
+        public static void ChangeUserRole(int userId, int roleId)
+        {
+            var user = GetUserById(userId);
+            user.RoleId = roleId;
+            using (var _context = new BookStoreContext())
+            {
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
+        }
+
+        public static void ChangePassword(int userId, string newPassword)
+        {
+            var user = GetUserById(userId);
+            user.Password = newPassword;
+            using (var _context = new BookStoreContext())
+            {
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
+        }
 
     }
 }

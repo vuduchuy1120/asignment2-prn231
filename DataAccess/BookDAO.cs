@@ -15,7 +15,7 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                return context.Books.Include(p => p.BookAuthors).ToList();
+                return context.Books.Include(p => p.BookAuthors).Include(p=>p.Pub).ToList();
             };
         }
         public static Book GetBookById(int id)

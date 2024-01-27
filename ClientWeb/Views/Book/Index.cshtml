@@ -1,0 +1,123 @@
+﻿@using BusinessObjects.DTO;
+
+@model List<BookResponse>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Index";
+
+}
+
+<div>
+    <h1 class="text-center ">Book information</h1>
+    <hr />
+    <form action="Book/Search" method="post">
+        <label for="name" style="width:150px">Name</label>
+        <input type="text" name="name" id="name" />
+        <br />
+        <br />
+        <label for="address" style="width:150px">City</label>
+        <input type="text" name="address" id="address" />
+        <br />
+        <br />
+        <label style="width:150px"></label>
+        <input style="width:85px" type="submit" value="Search" />
+        <input style="width:85px; margin-left:10px" type="reset" value="Clear" />
+    </form>
+    <br />
+    <br />
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Publisher</th>
+                <th>Price</th>
+                <th>PublishedDate</th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BookId</td>
+                    <td>@item.Title</td>
+                    <td>@item.Type</td>
+                    <td>@item.pubName</td>
+                    <td>@item.Price</td>
+                    <td>@item.PublishedDate</td>
+
+                    
+
+                    <td>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" onclick="displayUser(@item.BookId)">Edit</button>
+                        <a href="#" class="btn btn-primary">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <a href="Book/Create">Create new Book</a>
+
+
+
+
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form class="modal-body">
+
+
+                <div class="mb-1">
+                    <label for="Name" class="form-label">Name</label>
+                    <input style="border: 1px solid #dee2e6;"
+                           type="text" class="form-control" id="name" placeholder="Name">
+                </div>
+
+                <div class="mb-1">
+                    <label for="City" class="form-label">Book</label>
+                    <input style="border: 1px solid #dee2e6;"
+                           type="text" class="form-control" id="city" placeholder="City">
+                </div>
+
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    const displayUser = (id) => {
+        if (id == 0) {
+            document.getElementById('exampleModalLabel').innerHTML = 'Add new user'
+            document.getElementById('passwordForm').hidden = false
+        } else {
+            document.getElementById('exampleModalLabel').innerHTML = 'Update Book has id ' + id
+            document.getElementById('passwordForm').hidden = true
+        }
+
+        document.getElementById('BookId').innerHTML = `<span>Book has id: ${id}</span>`
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -17,7 +17,7 @@ namespace BusinessObjects.DTO
         {
             Success = false;
             Message = null;
-            Data = default(T);
+            Data = default;
         }
 
         public ApiResponse(T data)
@@ -31,13 +31,13 @@ namespace BusinessObjects.DTO
         {
             Success = false;
             Message = errorMessage;
-            Data = default(T);
+            Data = default;
         }
         public ApiResponse(bool isSuccess, string errorMessage)
         {
             Success = isSuccess;
             Message = errorMessage;
-            Data = default(T);
+            Data = default;
         }
 
         public ApiResponse(string successMessage, T data)
