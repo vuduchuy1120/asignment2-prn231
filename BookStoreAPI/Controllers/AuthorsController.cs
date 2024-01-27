@@ -88,10 +88,6 @@ namespace BookStoreAPI.Controllers
                 return BadRequest(new ApiResponse<object>(e.Message));
             }
 
-
-
-
-
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteAuthor(int id)

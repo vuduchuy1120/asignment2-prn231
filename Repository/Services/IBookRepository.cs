@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObjects.DTO;
+using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,14 @@ using System.Threading.Tasks;
 
 namespace Repository.Services
 {
-    internal interface IBookRepository
+    public interface IBookRepository
     {
+        public List<Book> GetBooks();
+        public Book GetBookByID(int bookId);
+        public void AddBook(BookRequest bookRequest);
+        public Book UpdateBook(int bookId, BookRequest bookRequest);
+        public void DeleteBook(int bookId);
+            
+
     }
 }
