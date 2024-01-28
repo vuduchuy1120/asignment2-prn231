@@ -21,6 +21,7 @@ namespace Repository
 
         public List<Book> GetBooks() => BookDAO.GetBooks();
 
+        public List<Book> GetBooksByNameOrPrice(string name, decimal? price)=> BookDAO.SearchBook(name, price);
         public Book UpdateBook(int bookId, BookRequest bookRequest)=> BookDAO.UpdateBook(bookId, bookRequest);
     }
 }

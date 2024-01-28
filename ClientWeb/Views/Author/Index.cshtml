@@ -13,8 +13,12 @@
     th, td {
         text-align: center;
     }
-</style>
 
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #acbfd2;
+    }
+
+</style>
 <div>
     @if (ViewData.ModelState.Any(m => m.Value.Errors.Any()))
     {
@@ -32,19 +36,7 @@
     }
     <h1 class="text-center ">Author information</h1>
     <hr />
-    <form action="Author/Search" method="post">
-        <label for="name" style="width:150px">Name</label>
-        <input type="text" name="name" id="name" />
-        <br />
-        <br />
-        <label for="address" style="width:150px">City</label>
-        <input type="text" name="address" id="address" />
-        <br />
-        <br />
-        <label style="width:150px"></label>
-        <input style="width:85px" type="submit" value="Search" />
-        <input style="width:85px; margin-left:10px" type="reset" value="Clear" />
-    </form>
+  
     <br />
     <br />
     <div class="d-flex justify-content-start mb-2">
@@ -202,7 +194,7 @@
                 $('#city').val(data.city);
                 $('#state').val(data.state);
                 $('#zip').val(data.zip);
-                $('#email').val(data.emailAddress);
+                $('#email').val(data.email);
             },
             error: (error) => {
                 console.log(error);

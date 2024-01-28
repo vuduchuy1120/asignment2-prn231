@@ -16,7 +16,7 @@ namespace BusinessObjects.Models
         public int PubId { get; set; }
         public DateTime? HireDate { get; set; }
 
-        public virtual Publisher Pub { get; set; } = null!;
-        public virtual Role Role { get; set; } = null!;
+        public virtual Publisher? Pub { get; set; } = null!;
+        public virtual Role? Role { get; set; } = null!;
     }
 }

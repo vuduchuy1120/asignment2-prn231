@@ -30,7 +30,6 @@ namespace BookStoreAPI.Controllers
                         Advance = book.Advance,
                         Royalty = book.Royalty,
                         YtdSales = book.YtdSales,
-
                         PublishedDate = book.PublishedDate,
                         Notes = book.Notes,
 
@@ -79,7 +78,7 @@ namespace BookStoreAPI.Controllers
 
                     BookAuthors = book.BookAuthors.Select(author => new BookAuthorResponse
                     {
-                        AuthorId = author.AuthorId,
+                        AuthorId = author.AuthorId
                     }).ToList()
                 };
                 return Ok(new ApiResponse<object>("Get book successfull!", response));
@@ -115,25 +114,28 @@ namespace BookStoreAPI.Controllers
             try
             {
                 updateBook = repository.UpdateBook(id, book);
+                var book1 = repository.GetBookByID(id);
                 // convert to response
                 var response = new BookResponse
                 {
-                    BookId = updateBook.BookId,
-                    Title = updateBook.Title,
-                    Price = updateBook.Price,
-                    Advance = updateBook.Advance,
-                    Royalty = updateBook.Royalty,
-                    PubId = updateBook.PubId,
-                    pubName = updateBook.Pub.PublisherName,
-                    YtdSales = updateBook.YtdSales,
-                    Type = updateBook.Type,
-                    PublishedDate = updateBook.PublishedDate,
-                    Notes = updateBook.Notes,
-                    BookAuthors = updateBook.BookAuthors.Select(author => new BookAuthorResponse
+                    BookId = book1.BookId,
+                    Title = book1.Title,
+                    Price = book1.Price,
+                    Advance = book1.Advance,
+                    Royalty = book1.Royalty,
+                    PubId = book1.PubId,
+                    pubName = book1.Pub.PublisherName,
+                    YtdSales = book1.YtdSales,
+                    Type = book1.Type,
+                    PublishedDate = book1.PublishedDate,
+                    Notes = book1.Notes,
+                    BookAuthors = book1.BookAuthors.Select(author => new BookAuthorResponse
                     {
-                        AuthorId = author.AuthorId,
+                        AuthorId = author.AuthorId
+
                     }).ToList()
                 };
+
                 return Ok(new ApiResponse<object>(response));
             }
             catch (Exception e)
@@ -160,6 +162,46 @@ namespace BookStoreAPI.Controllers
             {
                 return BadRequest(new ApiResponse<object>(e.Message));
             }
+        }
+
+        [HttpGet("search")]
+        public IActionResult SearchBook(string ?name, decimal? price)
+        {
+            try
+            {
+                var list = repository.GetBooksByNameOrPrice(name, price);
+                if(list == null)
+                {
+                    return Ok(new ApiResponse<object>(true,"Do not have book"));
+                }
+                var response = list.Select(book => new BookResponse
+                {
+                    BookId = book.BookId,
+                    Title = book.Title,
+                    Type = book.Type,
+                    PubId = book.PubId,
+                    pubName = book.Pub.PublisherName,
+                    Price = (book.Price),
+                    Advance = book.Advance,
+                    Royalty = book.Royalty,
+                    YtdSales = book.YtdSales,
+                    PublishedDate = book.PublishedDate,
+                    Notes = book.Notes,
+
+                    BookAuthors = book.BookAuthors.Select(author => new BookAuthorResponse
+                    {
+                        AuthorId = author.AuthorId
+                    }).ToList()
+                });
+                return Ok(new ApiResponse<object>(response));
+
+            }
+            catch
+            {
+                return BadRequest(new ApiResponse<object>(false, "Error!"));
+            }
+
+
         }
 
 

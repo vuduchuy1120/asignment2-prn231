@@ -28,7 +28,8 @@ namespace BookStoreAPI.Controllers
                 Source = user.Source,
                 RoleId = user.RoleId,
                 RoleName = user.Role.RoleDesc,
-                PubId = user.PubId
+                PubId = user.PubId,
+                HireDate = user.HireDate
             };
         }
 
@@ -49,7 +50,6 @@ namespace BookStoreAPI.Controllers
                     MiddleName = user.MiddleName,
                     RoleId = user.RoleId,
                     RoleName = user.Role.RoleDesc,
-
                     PubId = user.PubId,
                     HireDate = user.HireDate
                 }).ToList();
@@ -71,13 +71,12 @@ namespace BookStoreAPI.Controllers
                     Password = userReq.Password,
                     Email = userReq.Email,
                     RoleId = 1,
-
                     PubId = 1
                 };
-                 repository.RegisterUser(user);
-                
+                repository.RegisterUser(user);
 
-                return Ok(new ApiResponse<object>(UserToDTO(user)));
+                var newUser = repository.GetUserByEmailAndPassword(userReq.Email, userReq.Password);
+                return Ok(new ApiResponse<object>(UserToDTO(newUser)));
             }
             catch (Exception e)
             {
@@ -91,7 +90,7 @@ namespace BookStoreAPI.Controllers
         {
             try
             {
-                if(repository.IsEmailWasUsed(loginReq.Email))
+                if (repository.IsEmailWasUsed(loginReq.Email))
                 {
                     var user = repository.GetUserByEmailAndPassword(loginReq.Email, loginReq.Password);
                     if (user == null)
@@ -104,7 +103,7 @@ namespace BookStoreAPI.Controllers
                 {
                     return NotFound(new ApiResponse<object>("User not found!"));
                 }
-               
+
             }
             catch (Exception e)
             {
@@ -116,21 +115,26 @@ namespace BookStoreAPI.Controllers
         public IActionResult UpdateUser(int id, UpdateUserRequest userReq)
         {
             var updateUser = repository.GetUserByID(id);
+
             if (updateUser == null)
             {
                 return NotFound(new ApiResponse<object>("User not found!"));
             }
+            updateUser.Pub = null;
             try
             {
                 updateUser.Source = userReq.Source;
                 updateUser.FirstName = userReq.FirstName;
                 updateUser.LastName = userReq.LastName;
                 updateUser.MiddleName = userReq.MiddleName;
-                updateUser.PubId = userReq.PubId;                
+                updateUser.PubId = userReq.PubId;
+
                 updateUser.HireDate = userReq.HireDate;
 
-                repository.UpdateUser(updateUser);                
-                return Ok(new ApiResponse<object>(UserToDTO(updateUser)));
+                repository.UpdateUser(updateUser);
+                var user1 = repository.GetUserByID(id);
+
+                return Ok(new ApiResponse<object>(UserToDTO(user1)));
             }
             catch (Exception e)
             {
@@ -173,6 +177,96 @@ namespace BookStoreAPI.Controllers
                 return BadRequest(new ApiResponse<object>(e.Message));
             }
         }
+        // Admin create User
+        [HttpPost("admin/create")]
+        public IActionResult AdminCreateUser(AdminCreateUserRequest userReq)
+        {
+            try
+            {
+                var user = new User
+                {
+                    Password = userReq.Password,
+                    Email = userReq.EmailAddress,
+                    RoleId = userReq.RoleId,
+                    PubId = userReq.PubId,
+                    Source = userReq.Source,
+                    FirstName = userReq.FirstName,
+                    LastName = userReq.LastName,
+                    MiddleName = userReq.MiddleName,
+                    HireDate = userReq.HireDate
+                };
+                repository.RegisterUser(user);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
+        }
+
+        // Admin update User
+        [HttpPut("admin/update/{id}")]
+        public IActionResult AdminUpdateUser(int id, UserUpdateProfile userReq)
+        {
+            var updateUser = repository.GetUserByID(id);
+
+
+            if (updateUser == null)
+            {
+                return NotFound(new ApiResponse<object>("User not found!"));
+            }
+            try
+            {
+                updateUser.Source = userReq.Source;
+                updateUser.FirstName = userReq.FirstName;
+                updateUser.LastName = userReq.LastName;
+                updateUser.RoleId = userReq.RoleId;
+                updateUser.Role = null;
+                updateUser.MiddleName = userReq.MiddleName;
+                updateUser.PubId = userReq.PubId;
+                updateUser.HireDate = userReq.HireDate;
+                repository.UpdateUser(updateUser);
+
+                var user = repository.GetUserByID(id);
+
+
+                return Ok(new ApiResponse<object>("update succesfull", UserToDTO(user)));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
+
+        }
+
+        [HttpPut("updateProfile/{id}")]
+        public IActionResult UpdateProfile(int id, UpdateProfileRequest userReq)
+        {
+            var updateUser = repository.GetUserByID(id);
+            if (updateUser == null)
+            {
+                return NotFound(new ApiResponse<object>("User not found!"));
+            }
+            updateUser.Pub = null;
+            try
+            {
+                updateUser.FirstName = userReq.FirstName;
+                updateUser.LastName = userReq.LastName;
+                updateUser.MiddleName = userReq.MiddleName;
+                updateUser.HireDate = userReq.HireDate;
+                updateUser.PubId = userReq.pubID;
+
+                repository.UpdateUser(updateUser);
+
+                var user = repository.GetUserByID(id);
+                return Ok(new ApiResponse<object>("update succesfull", UserToDTO(user)));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>(e.Message));
+            }
+        }
+
 
     }
 }

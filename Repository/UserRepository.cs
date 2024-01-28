@@ -23,5 +23,7 @@ namespace Repository
         public bool IsUserExist(int userId) => UserDAO.IsUserExist(userId);
         public void RegisterUser(User user) => UserDAO.RegisterUser(user);
         public void UpdateUser(User user) => UserDAO.UpdateUser(user);
+
+
     }
 }

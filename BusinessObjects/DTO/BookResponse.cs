@@ -12,7 +12,7 @@ namespace BusinessObjects.DTO
         public string Title { get; set; } = null!;
         public string Type { get; set; } = null!;
         public int PubId { get; set; }
-        public string pubName { get; set; } = null!;
+        public string? pubName { get; set; } = null!;
         public decimal? Price { get; set; }
         public string? Advance { get; set; }
         public string? Royalty { get; set; }
@@ -20,7 +20,7 @@ namespace BusinessObjects.DTO
         public string? Notes { get; set; }
         public DateTime? PublishedDate { get; set; }
 
-        public List<BookAuthorResponse> BookAuthors { get; set; }
+        public List<BookAuthorResponse>? BookAuthors { get; set; }
 
     }
 }

@@ -16,6 +16,6 @@ namespace Repository.Services
         public Book UpdateBook(int bookId, BookRequest bookRequest);
         public void DeleteBook(int bookId);
             
-
+        public List<Book> GetBooksByNameOrPrice(string name, decimal? price);
     }
 }

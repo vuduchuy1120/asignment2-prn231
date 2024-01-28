@@ -23,6 +23,14 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
+                return context.Books.Include(p=>p.BookAuthors).Include(p => p.Pub).SingleOrDefault(x => x.BookId == id);
+            };
+        }
+
+        public static Book getBookByIdNotInclude(int id)
+        {
+            using (var context = new BookStoreContext())
+            {
                 return context.Books.SingleOrDefault(x => x.BookId == id);
             };
         }
@@ -58,12 +66,13 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                var book = context.Books.SingleOrDefault(x => x.BookId == id);
+                var book = context.Books.Include(p=>p.Pub).SingleOrDefault(x => x.BookId == id);
                 if (book != null)
                 {
                     book.Title = bookRequest.Title;
                     book.Type = bookRequest.Type;
                     book.Price = bookRequest.Price;
+                    book.PubId = bookRequest.PubId;
                     book.Advance = bookRequest.Advance;
                     book.Royalty = bookRequest.Royalty;
                     book.YtdSales = bookRequest.YtdSales;
@@ -107,6 +116,25 @@ namespace DataAccess
                 }
             }
         }
+
+        // search book by name or price parameter is searchName and searchPrice
+        public static List<Book> SearchBook(string searchName, decimal? searchPrice)
+        {
+            using (var context = new BookStoreContext())
+            {
+                var books = context.Books.Include(p => p.BookAuthors).Include(p => p.Pub).ToList();
+                if (searchName != null)
+                {
+                    books = books.Where(x => x.Title.ToLower().Contains(searchName.ToLower())).ToList();
+                }
+                if (searchPrice != null)
+                {
+                    books = books.Where(x => x.Price == searchPrice).ToList();
+                }
+                return books;
+            }
+        }
+
 
     }
 }

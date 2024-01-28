@@ -25,12 +25,12 @@ namespace ClientWeb.Controllers
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                return RedirectToAction("Register/Index", new { Message = "Please input both email and password" });
+                return RedirectToAction("Index", new { Message = "Please input both email and password" });
             }
 
             if (password != confirmPassword)
             {
-                return RedirectToAction("Register/Index", new { Message = "Password and confirm password must be the same" });
+                return RedirectToAction("Index", new { Message = "Password and confirm password must be the same" });
             }
 
             var authRequest = new UserRequest
@@ -52,23 +52,23 @@ namespace ClientWeb.Controllers
                             // pass by login
                             if (successResponse != null)
                             {
-                                   return RedirectToAction("Login/Index", new { Message = successResponse.Message });
+                                   return RedirectToAction("Index","Login", new { Message = successResponse.Message });
                             }
                             //return RedirectToAction("Index","Home", new { Message = successResponse.Message });
                         }
 
                         var errorResponseJson = await response.Content.ReadAsStringAsync();
                         var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(errorResponseJson);
-                        return RedirectToAction("Register/Index", new { Message = errorResponse.Message });
+                        return RedirectToAction("Index", new { Message = errorResponse.Message });
                     }
                 }
                 catch (HttpRequestException)
                 {
-                    return RedirectToAction("Register/Index", new { Message = "Error connecting to service." });
+                    return RedirectToAction("Index", new { Message = "Error connecting to service." });
                 }
                 catch (JsonException)
                 {
-                    return RedirectToAction("Register/Index", new { Message = "Error parsing the service response." });
+                    return RedirectToAction("Index", new { Message = "Error parsing the service response." });
                 }
             }
         }

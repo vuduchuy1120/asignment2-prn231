@@ -16,7 +16,7 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                return context.Users.Where(u => u.Email == email).FirstOrDefault();
+                return context.Users.Include(r=>r.Role).Where(u => u.Email == email).FirstOrDefault();
             }
 
         }
@@ -25,7 +25,7 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
-                return context.Users.Include(r=>r.Role).ToList();
+                return context.Users.Include(p=>p.Role).ToList();
             }
         }
         // get user by id
@@ -51,7 +51,9 @@ namespace DataAccess
         {
             using (var context = new BookStoreContext())
             {
+                Console.WriteLine(user.RoleId);
                 context.Users.Update(user);
+
                 context.SaveChanges();
             }
         }
@@ -78,7 +80,7 @@ namespace DataAccess
         {
             using (var _context = new BookStoreContext())
             {
-                return _context.Users.Any(u => u.Email == email);
+                return _context.Users.Include(r => r.Role).Any(u => u.Email == email);
             }
         }
 
@@ -86,7 +88,7 @@ namespace DataAccess
         {
             using (var _context = new BookStoreContext())
             {
-                return _context.Users.Any(x => x.UserId == userId);
+                return _context.Users.Include(r => r.Role).Any(x => x.UserId == userId);
             }
         }
         public static void ChangeUserRole(int userId, int roleId)
